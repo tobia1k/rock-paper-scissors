@@ -1,3 +1,6 @@
+let humanScore = 0;
+let computerScore = 0;
+
 function getComputerChoice() {
     let choice = Math.floor(Math.random() * 3);
     switch(choice) {
@@ -22,10 +25,53 @@ function getHumanChoice() {
     if (choice) {
         choice.toLowerCase();
     }
-    if (choice == "rock" || choice == "paper" || choice == "scissors") {
+    if (choice === "rock" || choice === "paper" || choice === "scissors") {
         return choice;
     }
     else {
-        return "Invalid Input";
+        console.log("Invalid input, try again.");
+        return getHumanChoice();
     }
 }
+
+function playRound(humanChoice, computerChoice) {
+    if (humanChoice === "rock" && computerChoice === "scissors"
+        || humanChoice === "paper" && computerChoice === "rock"
+        || humanChoice === "scissors" && computerChoice === "paper")
+    {
+        ++humanScore;
+        console.log(`You win! ${capitalizeFirstLetter(humanChoice)} beats ${capitalizeFirstLetter(computerChoice)}.`);
+    }
+    else if (computerChoice === "rock" && humanChoice === "scissors"
+        || computerChoice === "paper" && humanChoice === "rock"
+        || computerChoice === "scissors" && humanChoice === "paper")
+    {
+        ++computerScore;
+        console.log(`You lose! ${capitalizeFirstLetter(computerChoice)} beats ${capitalizeFirstLetter(humanChoice)}.`)
+    }
+    else if (humanChoice === computerChoice) {
+        console.log(`It's a tie! You both picked ${capitalizeFirstLetter(humanChoice)}.`);
+    }
+    else {
+        console.log("huh?");
+    }
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+const humanSelection = getHumanChoice();
+const computerSelection = getComputerChoice();
+
+function playGame(){
+    humanScore = 0;
+    computerScore = 0;
+    playRound(humanSelection, computerSelection);
+    for (let i = 0; i < 4; i++) {
+        playRound(getHumanChoice(), getComputerChoice());
+    }
+    console.log(`Your Score: ${humanScore}`);
+    console.log(`Computer Score: ${computerScore}`);
+}
+playGame();
