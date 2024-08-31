@@ -61,17 +61,27 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const humanSelection = getHumanChoice();
-const computerSelection = getComputerChoice();
+
 
 function playGame(){
     humanScore = 0;
     computerScore = 0;
+    const humanSelection = getHumanChoice();
+    const computerSelection = getComputerChoice();
     playRound(humanSelection, computerSelection);
     for (let i = 0; i < 4; i++) {
         playRound(getHumanChoice(), getComputerChoice());
     }
     console.log(`Your Score: ${humanScore}`);
     console.log(`Computer Score: ${computerScore}`);
+    if (humanScore > computerScore) {
+        console.log("You win this game!");
+    }
+    else if (humanScore < computerScore) {
+        console.log("You lose this game.");
+    }
+    else {
+        console.log("You tied this game.");
+    }
 }
 playGame();
