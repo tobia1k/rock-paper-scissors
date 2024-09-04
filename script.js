@@ -1,5 +1,11 @@
 let humanScore = 0;
 let computerScore = 0;
+const log = document.querySelector('#results');
+const humanScoreDisplay = document.querySelector('#humanScore');
+const computerScoreDisplay = document.querySelector('#computerScore');
+const btns = document.getElementsByClassName('button');
+humanScoreDisplay.innerText = `Your Score: ${humanScore}`;
+computerScoreDisplay.innerText = `Computer Score: ${computerScore}`;
 
 function getComputerChoice() {
     let choice = Math.floor(Math.random() * 3);
@@ -18,42 +24,34 @@ function getComputerChoice() {
     }
 }
 
-function getHumanChoice() {
-    let choice = prompt("Rock, paper, scissors. Shoot!");
-    // Make sure choice is not falsy first, performing .toLowerCase in declaration throws
-    // TypeError if choice is null (I.E. clicking cancel).
-    if (choice) {
-        choice.toLowerCase();
-    }
-    if (choice === "rock" || choice === "paper" || choice === "scissors") {
-        return choice;
-    }
-    else {
-        console.log("Invalid input, try again.");
-        return getHumanChoice();
-    }
-}
-
 function playRound(humanChoice, computerChoice) {
     if (humanChoice === "rock" && computerChoice === "scissors"
         || humanChoice === "paper" && computerChoice === "rock"
         || humanChoice === "scissors" && computerChoice === "paper")
     {
         ++humanScore;
-        console.log(`You win! ${capitalizeFirstLetter(humanChoice)} beats ${capitalizeFirstLetter(computerChoice)}.`);
+        updateScoreDisplay();
+        log.innerText = `You win this round! ${capitalizeFirstLetter(humanChoice)} beats ${capitalizeFirstLetter(computerChoice)}.`;
+        if (humanScore === 5) {
+            displayWinner('You win');
+        }
     }
     else if (computerChoice === "rock" && humanChoice === "scissors"
         || computerChoice === "paper" && humanChoice === "rock"
         || computerChoice === "scissors" && humanChoice === "paper")
     {
         ++computerScore;
-        console.log(`You lose! ${capitalizeFirstLetter(computerChoice)} beats ${capitalizeFirstLetter(humanChoice)}.`)
+        updateScoreDisplay();
+        log.innerText = `You lose this round! ${capitalizeFirstLetter(computerChoice)} beats ${capitalizeFirstLetter(humanChoice)}.`;
+        if (computerScore === 5) {
+            displayWinner('The computer wins');
+        }
     }
     else if (humanChoice === computerChoice) {
-        console.log(`It's a tie! You both picked ${capitalizeFirstLetter(humanChoice)}.`);
+        log.innerText = `It's a tie! You both picked ${capitalizeFirstLetter(humanChoice)}.`;
     }
     else {
-        console.log("huh?");
+        log.innerText = "huh?";
     }
 }
 
@@ -61,27 +59,49 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function displayWinner(winner) {
+    for (let i = 0; i < btns.length; i++) {
+        btns[i].disabled = true;
+    }
+    log.innerText = `Game over! ${winner}!`;
+    const playAgainBtn = document.createElement('button');
+    playAgainBtn.innerText = "Play Again";
+    document.body.appendChild(playAgainBtn);
+    playAgainBtn.addEventListener('click', (e) => {
+        resetGame();
+        playAgainBtn.remove();
+    });
+}
 
-
-function playGame(){
+function resetGame() {
     humanScore = 0;
     computerScore = 0;
-    const humanSelection = getHumanChoice();
-    const computerSelection = getComputerChoice();
-    playRound(humanSelection, computerSelection);
-    for (let i = 0; i < 4; i++) {
-        playRound(getHumanChoice(), getComputerChoice());
-    }
-    console.log(`Your Score: ${humanScore}`);
-    console.log(`Computer Score: ${computerScore}`);
-    if (humanScore > computerScore) {
-        console.log("You win this game!");
-    }
-    else if (humanScore < computerScore) {
-        console.log("You lose this game.");
-    }
-    else {
-        console.log("You tied this game.");
+    updateScoreDisplay();
+    log.innerText = '';
+    for (let i = 0; i < btns.length; i++) {
+        btns[i].disabled = false;
     }
 }
-playGame();
+
+function updateScoreDisplay() {
+        humanScoreDisplay.innerText = `Your Score: ${humanScore}`;
+        computerScoreDisplay.innerText = `Computer Score: ${computerScore}`;
+}
+
+let btn = document.querySelector(".btn");
+
+btn.addEventListener('click', (e) => {
+    let target = e.target;
+
+    switch (target.id) {
+        case 'btnRock':
+            playRound('rock', getComputerChoice());
+            break;
+        case 'btnPaper':
+            playRound('paper', getComputerChoice());
+            break;
+        case 'btnScissors':
+            playRound('scissors', getComputerChoice());
+            break;
+    }
+});
